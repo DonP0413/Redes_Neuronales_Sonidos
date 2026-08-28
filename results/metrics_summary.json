@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-08-24T02:50:48.290685+00:00",
+  "model_file": "audio_classifier.keras",
+  "selected_optimizer": "sgd",
+  "selection_rule": "highest validation accuracy, then lowest validation loss",
+  "parameter_count": 89286,
+  "input_shape": [
+    64,
+    320,
+    1
+  ],
+  "class_names": [
+    "claxon",
+    "ladrido",
+    "aplausos",
+    "lluvia",
+    "sirena",
+    "helicoptero"
+  ],
+  "display_labels": {
+    "claxon": "Claxon",
+    "ladrido": "Ladrido",
+    "aplausos": "Aplausos",
+    "lluvia": "Lluvia",
+    "sirena": "Sirena",
+    "helicoptero": "Helicóptero"
+  },
+  "preprocessing": {
+    "sample_rate": 16000,
+    "duration_seconds": 5.0,
+    "n_mels": 64,
+    "n_fft": 512,
+    "hop_length": 256,
+    "fmin": 50,
+    "fmax": 7600,
+    "target_frames": 320,
+    "top_db": 80.0
+  },
+  "dataset": {
+    "kind": "real_recordings",
+    "source": "ESC-50",
+    "total_samples": 240,
+    "samples_per_class": {
+      "claxon": 40,
+      "ladrido": 40,
+      "aplausos": 40,
+      "lluvia": 40,
+      "sirena": 40,
+      "helicoptero": 40
+    },
+    "split_sizes": {
+      "train": 144,
+      "validation": 48,
+      "test": 48
+    },
+    "seed": 2026,
+    "split_strategy": "ESC-50 official folds: train=1-3, validation=4, test=5"
+  },
+  "experiments": [
+    {
+      "optimizer": "adam",
+      "epochs_executed": 70,
+      "best_epoch": 60,
+      "best_validation_accuracy": 0.9791666865348816,
+      "best_validation_loss": 0.09924358129501343,
+      "test_accuracy": 0.875,
+      "test_loss": 0.304245263338089,
+      "test_precision_macro": 0.8767195767195769,
+      "test_recall_macro": 0.875,
+      "test_f1_macro": 0.871677559912854
+    },
+    {
+      "optimizer": "sgd",
+      "epochs_executed": 70,
+      "best_epoch": 62,
+      "best_validation_accuracy": 1.0,
+      "best_validation_loss": 0.08829551935195923,
+      "test_accuracy": 0.8958333134651184,
+      "test_loss": 0.5188225507736206,
+      "test_precision_macro": 0.9212121212121213,
+      "test_recall_macro": 0.8958333333333334,
+      "test_f1_macro": 0.892894629736735
+    }
+  ],
+  "selected_test_metrics": {
+    "optimizer": "sgd",
+    "epochs_executed": 70,
+    "best_epoch": 62,
+    "best_validation_accuracy": 1.0,
+    "best_validation_loss": 0.08829551935195923,
+    "test_accuracy": 0.8958333134651184,
+    "test_loss": 0.5188225507736206,
+    "test_precision_macro": 0.9212121212121213,
+    "test_recall_macro": 0.8958333333333334,
+    "test_f1_macro": 0.892894629736735
+  },
+  "confusion_matrix": [
+    [
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      2,
+      6,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      5,
+      2,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      8,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      8,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      8
+    ]
+  ],
+  "warning": null
+}
