@@ -1,0 +1,56 @@
+[
+  {
+    "path": "claxon/5-179860-A-43.wav",
+    "class": "claxon",
+    "source": "ESC-50",
+    "original_category": "car_horn",
+    "fold": 5,
+    "esc50_filename": "5-179860-A-43.wav",
+    "freesound_id": "179860"
+  },
+  {
+    "path": "ladrido/5-203128-A-0.wav",
+    "class": "ladrido",
+    "source": "ESC-50",
+    "original_category": "dog",
+    "fold": 5,
+    "esc50_filename": "5-203128-A-0.wav",
+    "freesound_id": "203128"
+  },
+  {
+    "path": "aplausos/5-209989-A-22.wav",
+    "class": "aplausos",
+    "source": "ESC-50",
+    "original_category": "clapping",
+    "fold": 5,
+    "esc50_filename": "5-209989-A-22.wav",
+    "freesound_id": "209989"
+  },
+  {
+    "path": "lluvia/5-181766-A-10.wav",
+    "class": "lluvia",
+    "source": "ESC-50",
+    "original_category": "rain",
+    "fold": 5,
+    "esc50_filename": "5-181766-A-10.wav",
+    "freesound_id": "181766"
+  },
+  {
+    "path": "sirena/5-117118-A-42.wav",
+    "class": "sirena",
+    "source": "ESC-50",
+    "original_category": "siren",
+    "fold": 5,
+    "esc50_filename": "5-117118-A-42.wav",
+    "freesound_id": "117118"
+  },
+  {
+    "path": "helicoptero/5-177957-A-40.wav",
+    "class": "helicoptero",
+    "source": "ESC-50",
+    "original_category": "helicopter",
+    "fold": 5,
+    "esc50_filename": "5-177957-A-40.wav",
+    "freesound_id": "177957"
+  }
+]
