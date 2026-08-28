@@ -27,4 +27,5 @@ docs/_rendered/
 server*.log
 runtime_server.log
 api_smoke_response.json
+docs/
 README.md
