@@ -1,0 +1,17 @@
+.git
+.github
+.venv
+.uv-python
+.uv-cache
+__pycache__
+.pytest_cache
+tests
+dataset
+results/cache
+qa_docs
+*.docx
+*.pdf
+.env
+server*.log
+runtime_server.log
+api_smoke_response.json

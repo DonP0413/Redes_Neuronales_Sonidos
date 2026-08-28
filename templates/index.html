@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07121f">
+  <meta name="description" content="Clasificador de seis sonidos ambientales reales mediante una CNN.">
+  <title>Onda — Reconocimiento de audio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='6') }}">
+  <script defer src="{{ url_for('static', filename='js/app.js', v='6') }}"></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Ir al inicio">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span>ONDA<span class="brand-dot">.</span></span>
+    </a>
+    <nav aria-label="Navegación principal">
+      <a href="#analizar">Analizar</a>
+      <a href="#como-funciona">Modelo</a>
+    </nav>
+    <div class="model-status {{ 'online' if model_info.available else 'offline' }}">
+      <span></span>{{ 'Modelo listo' if model_info.available else 'Falta entrenar' }}
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span>Proyecto 2026_2</span> · Redes neuronales</p>
+        <h1>Tu sonido tiene una <em>firma.</em><br>La CNN la reconoce.</h1>
+        <p class="hero-lead">
+          Carga un audio o grábalo desde el micrófono. El sistema lo convierte
+          en un Mel-espectrograma y clasifica seis sonidos reales en segundos.
+        </p>
+        <div class="class-list" aria-label="Clases reconocidas">
+          {% for class_name in model_info.classes %}
+          <span><b>{{ '%02d' | format(loop.index) }}</b> {{ model_info.display_labels.get(class_name, class_name | title) }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="sound-core">
+          <span style="--h:28%"></span><span style="--h:64%"></span>
+          <span style="--h:88%"></span><span style="--h:48%"></span>
+          <span style="--h:74%"></span><span style="--h:36%"></span>
+          <span style="--h:92%"></span><span style="--h:56%"></span>
+          <span style="--h:32%"></span>
+        </div>
+        <p>16 kHz <span>/</span> 5.0 s <span>/</span> 64 Mels</p>
+      </div>
+    </section>
+
+    {% if demo_examples %}
+    <section class="examples section-shell" id="ejemplos" aria-labelledby="examples-title">
+      <div class="section-heading compact">
+        <p class="eyebrow">Antes de analizar</p>
+        <h2 id="examples-title">Escucha las seis clases</h2>
+        <p>Son grabaciones reales de ESC-50 reservadas en el fold 5 y excluidas del entrenamiento.</p>
+      </div>
+      <div class="example-grid">
+        {% for example in demo_examples %}
+        <article>
+          <span>{{ '%02d' | format(loop.index) }}</span>
+          <strong>{{ example.label }}</strong>
+          <audio controls preload="none" src="{{ url_for('static', filename=example.filename) }}"></audio>
+        </article>
+        {% endfor %}
+      </div>
+      <p class="dataset-credit">Dataset ESC-50 · licencia CC BY-NC · Karol J. Piczak.</p>
+    </section>
+    {% endif %}
+
+    <section class="analyzer section-shell" id="analizar" aria-labelledby="analyzer-title">
+      <div class="section-heading">
+        <p class="eyebrow">01 · Laboratorio</p>
+        <h2 id="analyzer-title">Pon el modelo a escuchar</h2>
+        <p>Para mejores resultados, graba un solo sonido, cerca del micrófono y con poco ruido.</p>
+      </div>
+
+      <div class="analyzer-grid">
+        <div class="input-panel">
+          <div class="mode-tabs" role="tablist" aria-label="Origen del audio">
+            <button class="mode-tab active" id="upload-tab" type="button" role="tab" aria-selected="true" data-panel="upload-panel">Subir archivo</button>
+            <button class="mode-tab" id="record-tab" type="button" role="tab" aria-selected="false" data-panel="record-panel">Usar micrófono</button>
+          </div>
+
+          <div id="upload-panel" class="tab-panel active" role="tabpanel" aria-labelledby="upload-tab">
+            <label class="drop-zone" id="drop-zone" for="audio-file">
+              <input id="audio-file" name="audio" type="file" accept="audio/*,.wav,.flac,.ogg,.mp3,.m4a,.webm">
+              <span class="upload-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 14v5h14v-5"/></svg>
+              </span>
+              <strong>Arrastra tu audio aquí</strong>
+              <small>o haz clic para elegir · hasta {{ max_audio_mb }} MB</small>
+              <span class="format-list">{{ allowed_extensions | join(' · ') | upper }}</span>
+            </label>
+          </div>
+
+          <div id="record-panel" class="tab-panel" role="tabpanel" aria-labelledby="record-tab" hidden>
+            <div class="recorder-box">
+              <button id="record-button" class="record-button" type="button" aria-label="Iniciar grabación">
+                <span></span>
+              </button>
+              <div>
+                <strong id="record-label">Listo para grabar</strong>
+                <p id="record-time">00:00.0</p>
+              </div>
+              <small>Duración máxima: 8 segundos</small>
+            </div>
+          </div>
+
+          <div class="audio-preview" id="audio-preview" hidden>
+            <div class="file-meta">
+              <span class="file-type">WAV</span>
+              <div><strong id="file-name"></strong><small id="file-size"></small></div>
+              <button id="remove-file" type="button" aria-label="Quitar audio">×</button>
+            </div>
+            <canvas id="waveform" width="720" height="120" aria-label="Forma de onda del audio"></canvas>
+            <audio id="audio-player" controls></audio>
+          </div>
+
+          <button id="analyze-button" class="primary-button" type="button" disabled>
+            <span class="button-label">Analizar audio</span>
+            <span class="button-loader" aria-hidden="true"></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
+          </button>
+          <p id="feedback" class="feedback" role="alert" aria-live="assertive" aria-atomic="true"></p>
+        </div>
+
+        <aside class="result-panel" id="result-panel" aria-live="polite">
+          <div class="empty-result" id="empty-result">
+            <span>?</span>
+            <h3>Aún no hay predicción</h3>
+            <p>El resultado y las probabilidades aparecerán aquí.</p>
+          </div>
+          <div class="result-content" id="result-content" hidden>
+            <div class="result-topline">
+              <span>Predicción principal</span>
+              <small id="latency"></small>
+            </div>
+            <div class="prediction-lockup">
+              <div class="confidence-ring" id="confidence-ring">
+                <strong id="confidence">0%</strong><small>confianza</small>
+              </div>
+              <div><p>El modelo escucha</p><h3 id="prediction-label">—</h3></div>
+            </div>
+            <div class="probability-list" id="probability-list"></div>
+            <div class="spectrogram-card">
+              <div><strong>Mel-espectrograma</strong><small>frecuencia × tiempo</small></div>
+              <canvas id="spectrogram" width="640" height="260" aria-label="Mel-espectrograma del audio"></canvas>
+            </div>
+            <p class="model-warning" id="model-warning" hidden></p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="process section-shell" id="como-funciona" aria-labelledby="process-title">
+      <div class="section-heading compact">
+        <p class="eyebrow">02 · Pipeline</p>
+        <h2 id="process-title">Del micrófono a la decisión</h2>
+      </div>
+      <div class="process-track">
+        <article><span>01</span><div class="process-icon">≈</div><h3>Audio</h3><p>Mono, 16 kHz y 5 segundos.</p></article>
+        <article><span>02</span><div class="process-icon">▦</div><h3>Mel-espectrograma</h3><p>64 bandas, 320 pasos.</p></article>
+        <article><span>03</span><div class="process-icon">◇</div><h3>CNN</h3><p>Tres bloques convolucionales.</p></article>
+        <article><span>04</span><div class="process-icon">%</div><h3>Softmax</h3><p>Probabilidad por clase.</p></article>
+      </div>
+      <div class="model-facts">
+        <div><strong>{{ '{:,}'.format(model_info.parameter_count or 0) }}</strong><span>parámetros</span></div>
+        <div><strong>{{ (model_info.selected_optimizer or '—') | upper }}</strong><span>optimizador elegido</span></div>
+        <div><strong>{{ model_info.classes | length }}</strong><span>clases de salida</span></div>
+        <div><strong>320</strong><span>frames temporales</span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>ONDA<span class="brand-dot">.</span></span>
+    <p>Sistemas Embebidos y Redes Neuronales · 2026_2</p>
+  </footer>
+</body>
+</html>

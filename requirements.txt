@@ -1,0 +1,9 @@
+# Dependencias de producción (Python 3.11).
+Flask==3.1.2
+gunicorn==23.0.0
+tensorflow-cpu==2.21.0
+librosa==0.11.0
+soundfile==0.13.1
+audioread==3.0.1
+numpy>=1.26,<2.3
+
