@@ -1,0 +1,12 @@
+              precision    recall  f1-score   support
+
+      claxon       0.73      1.00      0.84         8
+     ladrido       1.00      0.75      0.86         8
+    aplausos       1.00      0.62      0.77         8
+      lluvia       0.80      1.00      0.89         8
+      sirena       1.00      1.00      1.00         8
+ helicoptero       1.00      1.00      1.00         8
+
+    accuracy                           0.90        48
+   macro avg       0.92      0.90      0.89        48
+weighted avg       0.92      0.90      0.89        48
